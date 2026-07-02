@@ -8,42 +8,17 @@
 const db = require("../config/database");
 
 class Auth {
-    static async login(username, email) {
-        // Pastikan username diisi dan bukan cuma spasi
-        if (!username || username.trim() === "") {
-            throw new Error("Username wajib diisi");
-        }
-
-        // Pastikan email diisi
-        if (!email || email.trim() === "") {
-            throw new Error("Email wajib diisi");
-        }
-
-        // Validasi format email menggunakan Regular Expression (Regex)
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            throw new Error("Format email tidak valid");
-        }
-        
-        const sql = `
-            SELECT
-                id,
-                username,
-                email
-            FROM users
-            WHERE username = ?
-            AND email = ?
-            AND deleted_at IS NULL
-            LIMIT 1
-        `;
-        const [rows] = await db.query(sql, [
-            username,
-            email
-        ]);
-
-        return rows[0];
-    }
-
+  static async login(nama, email) {
+    if (!nama || !email) throw new Error("Nama dan email wajib diisi");
+    const sql = `
+      SELECT id, nama, email, nohp, gender
+      FROM user
+      WHERE nama = ? AND email = ?
+      LIMIT 1
+    `;
+    const [rows] = await db.query(sql, [nama, email]);
+    return rows[0];
+  }
 }
 
 module.exports = Auth;

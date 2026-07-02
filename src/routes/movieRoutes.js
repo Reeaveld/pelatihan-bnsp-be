@@ -54,18 +54,16 @@ router.get("/:id", movieController.getMovie);
  *             schema:
  *                type: object
  *                properties:
- *                    movie_name:
+ *                    title:
  *                        type: string
- *                    genre:
+ *                    description:
  *                        type: string
- *                    duration:
- *                        type: integer
- *                    release_date:
+ *                    status:
  *                        type: string
- *                    price:
- *                        type: number
- *                    image:
+ *                        enum: [Segera Tayang, Sedang Tayang]
+ *                    jadwal:
  *                        type: string
+ *                        format: date
  *     responses:
  *        201:
  *            description: Created

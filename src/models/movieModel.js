@@ -1,81 +1,55 @@
 const db = require("../config/database");
 
 const Movie = {
+  async findAll() {
+    const [rows] = await db.query(
+      "SELECT id, title, description, status, jadwal FROM movies ORDER BY id DESC"
+    );
+    return rows;
+  },
 
-    async findAll() {
-        const [rows] = await db.query(
-            "SELECT * FROM movies WHERE deleted_at IS NULL ORDER BY id DESC"
-        );
-        return rows;
-    },
+  async findById(id) {
+    const [rows] = await db.query(
+      "SELECT id, title, description, status, jadwal FROM movies WHERE id = ?",
+      [id]
+    );
+    return rows[0];
+  },
 
-    async findById(id) {
-        const [rows] = await db.query(
-            "SELECT * FROM movies WHERE id = ? AND deleted_at IS NULL",
-            [id]
-        );
+  async create(data) {
+    const sql = `
+      INSERT INTO movies (title, description, status, jadwal)
+      VALUES (?, ?, ?, ?)
+    `;
+    const [result] = await db.query(sql, [
+      data.title,
+      data.description,
+      data.status || "Segera Tayang",
+      data.jadwal
+    ]);
+    return result;
+  },
 
-        return rows[0];
-    },
+  async update(id, data) {
+    const sql = `
+      UPDATE movies
+      SET title = ?, description = ?, status = ?, jadwal = ?
+      WHERE id = ?
+    `;
+    const [result] = await db.query(sql, [
+      data.title,
+      data.description,
+      data.status,
+      data.jadwal,
+      id
+    ]);
+    return result;
+  },
 
-    async create(data) {
-        const sql = `
-            INSERT INTO movies
-            (movie_name, genre, duration, release_date, price, image)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-
-        const [result] = await db.query(sql, [
-            data.movie_name,
-            data.genre,
-            data.duration,
-            data.release_date,
-            data.price,
-            data.image
-        ]);
-
-        return result;
-    },
-
-    async update(id, data) {
-
-        const sql = `
-            UPDATE movies
-            SET
-                movie_name=?,
-                genre=?,
-                duration=?,
-                release_date=?,
-                price=?,
-                image=?,
-                updated_at=NOW()
-            WHERE id=?
-        `;
-
-        const [result] = await db.query(sql, [
-            data.movie_name,
-            data.genre,
-            data.duration,
-            data.release_date,
-            data.price,
-            data.image,
-            id
-        ]);
-
-        return result;
-
-    },
-
-    async delete(id) {
-
-        const [result] = await db.query(
-            "UPDATE movies SET deleted_at=NOW() WHERE id=?",
-            [id]
-        );
-
-        return result;
-    }
-
+  async delete(id) {
+    const [result] = await db.query("DELETE FROM movies WHERE id = ?", [id]);
+    return result;
+  }
 };
 
 module.exports = Movie;

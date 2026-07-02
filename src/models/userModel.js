@@ -1,80 +1,55 @@
 const db = require("../config/database");
 
 const User = {
+  async findAll() {
+    const [rows] = await db.query(
+      "SELECT id, nama, nohp, email, gender FROM user ORDER BY id DESC"
+    );
+    return rows;
+  },
 
-    async findAll() {
+  async findById(id) {
+    const [rows] = await db.query(
+      "SELECT id, nama, nohp, email, gender FROM user WHERE id = ?",
+      [id]
+    );
+    return rows[0];
+  },
 
-        const [rows] = await db.query(
-            "SELECT id, username, email, created_at, updated_at FROM users WHERE deleted_at IS NULL ORDER BY id DESC"
-        );
+  async create(data) {
+    const sql = `
+      INSERT INTO user (nama, nohp, email, gender)
+      VALUES (?, ?, ?, ?)
+    `;
+    const [result] = await db.query(sql, [
+      data.nama,
+      data.nohp,
+      data.email,
+      data.gender
+    ]);
+    return result;
+  },
 
-        return rows;
+  async update(id, data) {
+    const sql = `
+      UPDATE user
+      SET nama = ?, nohp = ?, email = ?, gender = ?
+      WHERE id = ?
+    `;
+    const [result] = await db.query(sql, [
+      data.nama,
+      data.nohp,
+      data.email,
+      data.gender,
+      id
+    ]);
+    return result;
+  },
 
-    },
-
-    async findById(id) {
-
-        const [rows] = await db.query(
-            "SELECT id, username, email, created_at, updated_at FROM users WHERE id=? AND deleted_at IS NULL",
-            [id]
-        );
-
-        return rows[0];
-
-    },
-
-    async create(data) {
-
-        const sql = `
-            INSERT INTO users
-            (username,email,password)
-            VALUES(?,?,?)
-        `;
-
-        const [result] = await db.query(sql, [
-            data.username,
-            data.email,
-            data.password
-        ]);
-
-        return result;
-
-    },
-
-    async update(id,data){
-
-        const sql=`
-            UPDATE users
-            SET
-                username=?,
-                email=?,
-                password=?,
-                updated_at=NOW()
-            WHERE id=?
-        `;
-
-        const [result]=await db.query(sql,[
-            data.username,
-            data.email,
-            data.password,
-            id
-        ]);
-
-        return result;
-
-    },
-
-    async delete(id){
-
-        const [result]=await db.query(
-            "UPDATE users SET deleted_at=NOW() WHERE id=?",
-            [id]
-        );
-
-        return result;
-
-    }
-
+  async delete(id) {
+    const [result] = await db.query("DELETE FROM user WHERE id = ?", [id]);
+    return result;
+  }
 };
 
 module.exports = User;

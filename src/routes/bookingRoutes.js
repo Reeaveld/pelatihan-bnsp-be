@@ -58,13 +58,7 @@ router.get("/:id", bookingController.getBooking);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - user_id
- *               - movie_id
- *               - watch_at
- *               - seat
- *               - ticket_qty
- *               - price
+ *             required: [user_id, movie_id, seat_number]
  *             properties:
  *               user_id:
  *                 type: integer
@@ -73,7 +67,7 @@ router.get("/:id", bookingController.getBooking);
  *               watch_at:
  *                 type: string
  *                 format: date-time
- *               seat:
+ *               seat_number:
  *                 type: string
  *               ticket_qty:
  *                 type: integer
@@ -111,10 +105,7 @@ router.post("/", bookingController.createBooking);
  *                 type: integer
  *               movie_id:
  *                 type: integer
- *               watch_at:
- *                 type: string
- *                 format: date-time
- *               seat:
+ *               seat_number:
  *                 type: string
  *               ticket_qty:
  *                 type: integer
