@@ -1,8 +1,19 @@
 const express = require("express");
-
 const router = express.Router();
-
 const movieController = require("../controllers/movieController");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, 'movie_' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 /**
  * @swagger
@@ -11,81 +22,10 @@ const movieController = require("../controllers/movieController");
  *   description: Movie Management
  */
 
-/**
- * @swagger
- * /movies:
- *   get:
- *     summary: Get All Movies
- *     tags: [Movies]
- *     responses:
- *       200:
- *         description: Success
- */
 router.get("/", movieController.getMovies);
-
-/**
- * @swagger
- * /movies/{id}:
- *   get:
- *     summary: Get Movie By Id
- *     tags: [Movies]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *             type: integer
- *     responses:
- *       200:
- *         description: Success
- */
 router.get("/:id", movieController.getMovie);
-
-/**
- * @swagger
- * /movies:
- *   post:
- *     summary: Create Movie
- *     tags: [Movies]
- *     requestBody:
- *       required: true
- *       content:
- *          application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    title:
- *                        type: string
- *                    description:
- *                        type: string
- *                    status:
- *                        type: string
- *                        enum: [Segera Tayang, Sedang Tayang]
- *                    jadwal:
- *                        type: string
- *                        format: date
- *     responses:
- *        201:
- *            description: Created
- */
-router.post("/", movieController.createMovie);
-
-/**
- * @swagger
- * /movies/{id}:
- *   put:
- *     summary: Update Movie
- *     tags: [Movies]
- */
-router.put("/:id", movieController.updateMovie);
-
-/**
- * @swagger
- * /movies/{id}:
- *   delete:
- *     summary: Delete Movie
- *     tags: [Movies]
- */
+router.post("/", upload.single("image"), movieController.createMovie);
+router.put("/:id", upload.single("image"), movieController.updateMovie);
 router.delete("/:id", movieController.deleteMovie);
 
 module.exports = router;

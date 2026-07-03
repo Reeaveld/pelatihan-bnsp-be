@@ -8,10 +8,7 @@ const getMovies = async (req, res) => {
             data: movies
         });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -19,56 +16,45 @@ const getMovie = async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.id);
         if (!movie) {
-            return res.status(404).json({
-                success: false,
-                message: "Movie not found"
-            });
+            return res.status(404).json({ success: false, message: "Movie not found" });
         }
-        res.status(200).json({
-            success: true,
-            data: movie
-        });
+        res.status(200).json({ success: true, data: movie });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
 const createMovie = async (req, res) => {
     try {
-        const result = await Movie.create(req.body);
+        const payload = { ...req.body };
+        if (req.file) {
+            payload.image = req.file.filename;
+        }
+        const result = await Movie.create(payload);
         res.status(201).json({
             success: true,
             message: "Movie created successfully",
             insertId: result.insertId
         });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
 const updateMovie = async (req, res) => {
     try {
-        const result = await Movie.update(req.params.id, req.body);
+        const payload = { ...req.body };
+        if (req.file) {
+            payload.image = req.file.filename;
+        }
+        const result = await Movie.update(req.params.id, payload);
         res.status(200).json({
             success: true,
             message: "Movie updated successfully",
             affectedRows: result.affectedRows
         });
-
     } catch (err) {
-
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -80,14 +66,8 @@ const deleteMovie = async (req, res) => {
             message: "Movie deleted successfully",
             affectedRows: result.affectedRows
         });
-
     } catch (err) {
-
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 

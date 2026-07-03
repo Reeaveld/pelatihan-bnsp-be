@@ -3,14 +3,14 @@ const db = require("../config/database");
 const User = {
   async findAll() {
     const [rows] = await db.query(
-      "SELECT id, nama, nohp, email, gender FROM user ORDER BY id DESC"
+      "SELECT id, username, email FROM users ORDER BY id DESC"
     );
     return rows;
   },
 
   async findById(id) {
     const [rows] = await db.query(
-      "SELECT id, nama, nohp, email, gender FROM user WHERE id = ?",
+      "SELECT id, username, email FROM users WHERE id = ?",
       [id]
     );
     return rows[0];
@@ -18,36 +18,33 @@ const User = {
 
   async create(data) {
     const sql = `
-      INSERT INTO user (nama, nohp, email, gender)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO users (username, email, password)
+      VALUES (?, ?, ?)
     `;
     const [result] = await db.query(sql, [
-      data.nama,
-      data.nohp,
+      data.username,
       data.email,
-      data.gender
+      data.password
     ]);
     return result;
   },
 
   async update(id, data) {
     const sql = `
-      UPDATE user
-      SET nama = ?, nohp = ?, email = ?, gender = ?
+      UPDATE users
+      SET username = ?, email = ?
       WHERE id = ?
     `;
     const [result] = await db.query(sql, [
-      data.nama,
-      data.nohp,
+      data.username,
       data.email,
-      data.gender,
       id
     ]);
     return result;
   },
 
   async delete(id) {
-    const [result] = await db.query("DELETE FROM user WHERE id = ?", [id]);
+    const [result] = await db.query("DELETE FROM users WHERE id = ?", [id]);
     return result;
   }
 };

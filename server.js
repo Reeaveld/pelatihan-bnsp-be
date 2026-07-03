@@ -10,17 +10,17 @@ async function startServer() {
 
         const connection = await db.getConnection();
 
-        console.log("✅ MySQL Connected");
+        console.log("MySQL Connected");
 
         connection.release();
 
         app.listen(PORT, () => {
-            console.log(`🚀 Server running at http://localhost:${PORT}`);
+            console.log(`Server running at http://localhost:${PORT}`);
         });
 
     } catch (err) {
 
-        console.error("❌ Database Connection Failed");
+        console.error("Koneksi Database Gagal");
         console.error(err.message);
 
         process.exit(1);

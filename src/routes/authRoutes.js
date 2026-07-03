@@ -25,21 +25,52 @@ const authController = require("../controllers/authController");
  *           schema:
  *             type: object
  *             required:
- *               - username
  *               - email
+ *               - password
  *             properties:
- *               username:
- *                 type: string
- *                 example: ahmad
  *               email:
  *                 type: string
- *                 example: ahmad@gmail.com
+ *               password:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Login berhasil
  *       401:
- *         description: Username atau email salah
+ *         description: Email atau password salah
  */
 router.post("/login", authController.login);
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register User
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Registrasi berhasil
+ *       400:
+ *         description: Email sudah digunakan atau data tidak lengkap
+ */
+router.post("/register", authController.register);
+
 
 module.exports = router;
